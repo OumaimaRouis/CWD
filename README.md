@@ -1,73 +1,156 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# README: Documentation Test Technique 
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Schémas de Données
+Dans ce test technique, j'ai utilisé les schémas de données suivants avec la base de données MySQL :
 
-## Description
+### •	Auth (authentification)
+Représente l'authentification. Le schéma inclut les champs suivants :
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+o	Id (number) : Identifiant unique de l'utilisateur
+o	Name (string) : Nom d'utilisateur de l'utilisateur
+o	Email (string) : Adresse e-mail de l'utilisateur
+o	Password (string) : Mot de passe de l’utilisateur
 
-## Installation
+### •	Mekla
+Représente les opérations CRUD pour les posts de mekla. Le schéma inclut les champs suivants :
 
-```bash
-$ npm install
-```
+o	Id (number) : Identifiant unique du ‘mekla’
+o	Title (string) : Titre du ‘mekla’
+o	Content (string) : Contenu du ‘mekla’
+o	fileUrl (string) : URL du fichier à télécharger, peut être nul
 
-## Running the app
+## Instructions pour Lancer l'Application :
+### Construire l'image Docker :
+docker build -t my-app .
+### Lancer le conteneur :
+docker run -p 3000:3000 my-app
 
-```bash
-# development
-$ npm run start
 
-# watch mode
-$ npm run start:dev
 
-# production mode
-$ npm run start:prod
-```
 
-## Test
+## Points d'Entrée
 
-```bash
-# unit tests
-$ npm run test
+API REST
+### Authentification (auth.controller.ts)
+Ce fichier contient les contrôleurs pour les opérations liées à l'authentification des utilisateurs.
 
-# e2e tests
-$ npm run test:e2e
+### Inscription
+Méthode : POST
+URL : http://localhost:3000/auth/register
+Exemple de requête en JSON :
+{
+  "name": "test",
+  "email": "test@gmail.com",
+  "password": "password123"
+}
 
-# test coverage
-$ npm run test:cov
-```
+### Connexion
+Méthode : POST
+URL : http://localhost:3000/auth/login
+Exemple de requête en JSON :
+{
+  "email": "test@gmail.com",
+  "password": "password123"
+}
 
-## Support
+### Vérification de l'email
+Méthode : POST
+URL : http://localhost:3000/auth/send-verification-email
+Exemple de requête en JSON :
+{
+  "email": "test@gmail.com"
+}
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Réinitialisation du mot de passe
+Méthode : POST
+URL : http://localhost:3000/auth/send-password-reset-email
+Exemple de requête en JSON :
+{
+  "email": "test@gmail.com"
+}
 
-## Stay in touch
+### AuthService (auth.service.ts)
+Ce fichier contient les services qui implémentent le logique métier pour les opérations d'authentification, y compris l'inscription, la connexion, l'envoi des emails de vérification et de réinitialisation de mot de passe.
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### AuthEntity (auth.entity.ts)
+Ce fichier définit l'entité Auth, qui représente les utilisateurs dans la base de données. Il inclut les propriétés telles que l'ID, le nom, l'email, le mot de passe, la vérification et le token de réinitialisation.
 
-## License
+### AuthModule (auth.module.ts)
+Ce fichier configure le module d'authentification en déclarant et en reliant les contrôleurs, les services et les entités nécessaires pour l'authentification.
 
-Nest is [MIT licensed](LICENSE).
+
+
+
+
+
+
+
+### Mekla (mekla.controller.ts)
+Ce fichier contient les contrôleurs pour les opérations CRUD sur les entités Mekla.
+
+### Créer un nouveau ‘mekla’
+Méthode : POST
+URL : http://localhost:3000/mekla
+Exemple de requête en JSON :
+
+{
+  "title": "test",
+  "content": "content",
+  "fileUrl": "https://www.osureunion.fr/wp-content/uploads/2022/03/pdf-exemple.pdf"
+}
+
+### Voir tous les ‘mekla’
+Méthode : GET
+URL : http://localhost:3000/mekla
+
+### Voir un ‘mekla’ par son id
+
+Méthode : GET
+URL : http://localhost:3000/mekla/1
+
+
+
+
+###Modifier un ‘mekla’ par son id
+
+Méthode : PUT
+URL : http://localhost:3000/mekla/1
+
+Exemple de requête en JSON :
+{
+  "title": "modification test",
+  "content": "content",
+  "fileUrl": "https://www.osureunion.fr/wp-content/uploads/2022/03/pdf-exemple.pdf"
+}
+
+### Supprimer un ‘mekla’ par son id
+
+Méthode : DELETE
+URL : http://localhost:3000/mekla/1
+
+### MeklaService (mekla.service.ts)
+Ce fichier contient les services qui implémentent la logique métier pour les opérations CRUD sur les entités Mekla.
+
+### MeklaEntity (mekla.entity.ts)
+Ce fichier définit l'entité Mekla, qui représente les posts Mekla dans la base de données. Il inclut les propriétés telles que l'ID, le titre, le contenu et l'URL du fichier.
+
+
+
+### MeklaModule (mekla.module.ts)
+Ce fichier configure le module Mekla en déclarant et en reliant les contrôleurs, les services et les entités nécessaires pour les opérations CRUD sur les entités Mekla.
+
+
+## Interactions
+J'ai exploré davantage NestJS en consultant la documentation sur : NestJS Documentation: https://docs.nestjs.com/
+
+J'ai appris le CRUD à l'aide de : Tutoriel CRUD sur YouTube: https://www.youtube.com/watch?v=dAy4TZXzZck
+
+Pour l'authentification, j'ai consulté plusieurs sites et vidéos, notamment :
+
+Tutoriel d'authentification sur YouTube: https://www.youtube.com/watch?v=ED8uWgE-KeY 
+Documentation sur l'authentification de NestJS: https://docs.nestjs.com/security/authentication
+Pour NodeMailer, j'ai utilisé :
+
+Tutoriel FreeCodeCamp sur NodeMailer avec NestJS: https://www.freecodecamp.org/news/how-to-use-nodemailer-in-nestjs/
+et Tutorile sur Youtube: https://www.youtube.com/watch?v=Pu1YP5PZKFc

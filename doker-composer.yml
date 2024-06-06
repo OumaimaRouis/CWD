@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DB_HOST=db
+      - DB_PORT=3306  # Ce port est utilisé en interne par le conteneur MySQL
+      - DB_USER=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_NAME}
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    ports:
+      - "${DB_PORT}:3306"  # Exposez le port externe 3309 et mappez-le au port interne 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
